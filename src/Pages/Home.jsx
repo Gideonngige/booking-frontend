@@ -44,21 +44,63 @@ const events = [
     location: "Nairobi",
     date: "12 Aug 2026",
     price: 1500,
-    image: "https://source.unsplash.com/400x300/?concert",
+    image: "https://images.unsplash.com/photo-1507874457470-272b3c8d8ee2?w=800",
   },
   {
-    title: "Tech Conference",
+    title: "Tech Conference 2026",
     location: "Mombasa",
     date: "20 Sep 2026",
     price: 3000,
-    image: "https://source.unsplash.com/400x300/?conference",
+    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800",
+  },
+  {
+    title: "Campus Bash Party",
+    location: "Kisumu",
+    date: "5 Jul 2026",
+    price: 800,
+    image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800",
+  },
+  {
+    title: "Charity Run",
+    location: "Nakuru",
+    date: "18 Oct 2026",
+    price: 500,
+    image: "https://images.unsplash.com/photo-1508609349937-5ec4ae374ebf?w=800",
+  },
+  {
+    title: "Business Summit",
+    location: "Nairobi",
+    date: "10 Nov 2026",
+    price: 5000,
+    image: "https://images.unsplash.com/photo-1515169067868-5387ec356754?w=800",
+  },
+  {
+    title: "Food Festival",
+    location: "Eldoret",
+    date: "25 Jun 2026",
+    price: 1200,
+    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800",
+  },
+  {
+    title: "Wedding Expo",
+    location: "Thika",
+    date: "2 Dec 2026",
+    price: 2000,
+    image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800",
+  },
+  {
+    title: "Art & Culture Night",
+    location: "Nairobi",
+    date: "15 Aug 2026",
+    price: 1000,
+    image: "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800",
   },
 ];
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
 
       {/* HERO SECTION */}
-      <div className="bg-gradient-to-r from-orange-500 to-pink-500 text-white p-10 text-center">
+      <div className="bg-gradient-to-r from-orange-500 to-gray-900 text-white p-10 text-center">
         <h1 className="text-4xl font-bold">Discover Amazing Events</h1>
         <p className="mt-2">Find, book and enjoy events near you</p>
       </div>
