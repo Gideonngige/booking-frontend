@@ -7,6 +7,7 @@ import Register from './Pages/Register';
 import ForgotPassword from './Pages/Forgotpassword';
 import CreateEvent from './Pages/Create-event';
 import CreatorDashboard from './Pages/Creator-dashboard';
+import AdminDashboard from './Pages/Admin-dashboard';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/creator-dashboard" element={<CreatorDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         
         {/* Add more routes as needed */}
       </Routes>
