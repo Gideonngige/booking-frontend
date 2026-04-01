@@ -7,9 +7,9 @@ export default function Header() {
         <img src="/logo.png" alt="Tiki Logo" className="h-10 object-contain" />
       </div>
       <nav className="flex gap-6">
-        <a href="#" className="hover:underline">Home</a>
-        <a href="#" className="hover:underline">Explore</a>
-        <a href="#" className="hover:underline">Create Event</a>
+        <a href="/" className="hover:underline">Home</a>
+        <a href="/explore" className="hover:underline">Explore</a>
+        <a href="/create-event" className="hover:underline">Create Event</a>
         <a href="/login" className="hover:underline">Login</a>
       </nav>
     </header>

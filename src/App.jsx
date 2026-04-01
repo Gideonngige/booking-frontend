@@ -5,6 +5,7 @@ import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import ForgotPassword from './Pages/Forgotpassword';
+import CreateEvent from './Pages/Create-event';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/create-event" element={<CreateEvent />} />
         
         {/* Add more routes as needed */}
       </Routes>
