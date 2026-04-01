@@ -10,7 +10,7 @@ export default function Header() {
         <a href="#" className="hover:underline">Home</a>
         <a href="#" className="hover:underline">Explore</a>
         <a href="#" className="hover:underline">Create Event</a>
-        <a href="#" className="hover:underline">Login</a>
+        <a href="/login" className="hover:underline">Login</a>
       </nav>
     </header>
   );
