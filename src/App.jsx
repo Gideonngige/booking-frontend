@@ -22,7 +22,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-event" element={<CreateEvent />} />
-        <Route path="/creator-dashboard" element={<ProtectedRoute requiredRole="creator"><CreatorDashboard /></ProtectedRoute>} />
+        <Route path="/creator-dashboard" element={<ProtectedRoute requiredRole="organizer"><CreatorDashboard /></ProtectedRoute>} />
         <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
 
         {/* Add more routes as needed */}
