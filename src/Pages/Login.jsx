@@ -46,6 +46,7 @@ export default function Login() {
         navigate("/admin-dashboard");
       } else if (data.user.role === "organizer") {
         localStorage.setItem("user", JSON.stringify(data.user));
+        alert("Organizer ID: " + data.user.id);
         navigate("/creator-dashboard");
       } else {
         localStorage.setItem("user", JSON.stringify(data.user));
