@@ -37,7 +37,6 @@ export default function Login() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Backend login failed.");
-      alert(data.user.role === "organizer");
 
       // Step 4: Redirect based on role
       if (data.user.role === "admin") {
@@ -46,7 +45,6 @@ export default function Login() {
         navigate("/admin-dashboard");
       } else if (data.user.role === "organizer") {
         localStorage.setItem("user", JSON.stringify(data.user));
-        alert("Organizer ID: " + data.user.id);
         navigate("/creator-dashboard");
       } else {
         localStorage.setItem("user", JSON.stringify(data.user));
