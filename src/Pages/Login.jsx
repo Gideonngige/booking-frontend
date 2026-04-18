@@ -37,6 +37,7 @@ export default function Login() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Backend login failed.");
+      // alert("Role: " + data.user.role);
 
       // Step 4: Redirect based on role
       if (data.user.role === "admin") {

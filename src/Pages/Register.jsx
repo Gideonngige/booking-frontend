@@ -47,7 +47,7 @@ export default function Register() {
       const token = await user.getIdToken();
 
       // Step 3: Save extra user data to your Node.js backend
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register2`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -68,6 +68,7 @@ export default function Register() {
       navigate("/creator-dashboard");
     } catch (err) {
       console.error("Registration error:", err);
+      alert(err);
       setError(err.message);
     } finally {
       setLoading(false);
