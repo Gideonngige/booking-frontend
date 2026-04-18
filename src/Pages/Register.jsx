@@ -80,7 +80,7 @@ export default function Register() {
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <div className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            BE
+            KE
           </div>
         </div>
 

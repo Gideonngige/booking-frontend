@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Book Event */}
         <div>
-          <h3 className="font-semibold text-lg mb-3">Book Event</h3>
+          <h3 className="font-semibold text-lg mb-3">Karibu Event</h3>
           <ul className="space-y-2 text-gray-400">
             <li>Browse Events</li>
             <li>Buy Tickets</li>
@@ -52,7 +52,7 @@ export default function Footer() {
 
       {/* Bottom */}
       <div className="mt-10 border-t border-gray-700 pt-4 text-center text-gray-500 text-sm">
-        © {year} Book Event. All rights reserved.
+        © {year} Karibu Event. All rights reserved.
       </div>
     </footer>
   );
