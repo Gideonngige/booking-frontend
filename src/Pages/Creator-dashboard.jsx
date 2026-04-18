@@ -62,7 +62,7 @@ export default function CreatorDashboard() {
     : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 p-6">
+    <div className="min-h-screen bg-gradient-to-r from-orange-500 to-gray-900 p-6">
 
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
@@ -127,6 +127,7 @@ export default function CreatorDashboard() {
                   <th className="pr-4">Tickets</th>
                   <th className="pr-4">Revenue</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,6 +164,14 @@ export default function CreatorDashboard() {
                         }`}>
                           {isSoldOut ? "Sold Out" : isPast ? "Ended" : "Active"}
                         </span>
+                      </td>
+                      <td>
+                        <button
+                            onClick={() => navigate(`/verify-tickets/${event.id}`)}
+                            className="text-green-500 hover:underline text-xs font-semibold"
+                        >
+                        Verify Tickets
+                        </button>
                       </td>
                     </tr>
                   );
