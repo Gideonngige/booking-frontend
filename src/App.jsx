@@ -10,6 +10,7 @@ import ForgotPassword from './Pages/Forgotpassword';
 import CreateEvent from './Pages/Create-event';
 import CreatorDashboard from './Pages/Creator-dashboard';
 import AdminDashboard from './Pages/Admin-dashboard';
+import EventDetail from './Pages/EventDetail';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/create-event" element={<CreateEvent />} />
         <Route path="/creator-dashboard" element={<ProtectedRoute requiredRole="organizer"><CreatorDashboard /></ProtectedRoute>} />
         <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/events/:id" element={<EventDetail />} />
 
         {/* Add more routes as needed */}
       </Routes>
