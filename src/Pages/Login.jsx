@@ -37,13 +37,18 @@ export default function Login() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Backend login failed.");
+      alert(data.user.role === "organizer");
 
       // Step 4: Redirect based on role
       if (data.user.role === "admin") {
+        // cache data using localStorage or context if needed
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/admin-dashboard");
       } else if (data.user.role === "organizer") {
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/creator-dashboard");
       } else {
+        localStorage.setItem("user", JSON.stringify(data.user));
         navigate("/");
       }
 

@@ -6,18 +6,32 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+      if (user) {
+        setCurrentUser(user);
+        // Pull role from localStorage (set during login)
+        const savedUser = localStorage.getItem("user");
+        if (savedUser) {
+          const parsed = JSON.parse(savedUser);
+          setUserRole(parsed.role);
+        }
+      } else {
+        setCurrentUser(null);
+        setUserRole(null);
+        localStorage.removeItem("user");
+      }
       setLoadingUser(false);
     });
-    return unsubscribe; // cleanup on unmount
+
+    return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, loadingUser }}>
+    <AuthContext.Provider value={{ currentUser, userRole, loadingUser }}>
       {!loadingUser && children}
     </AuthContext.Provider>
   );
