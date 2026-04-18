@@ -28,7 +28,6 @@ export default function EventDetail() {
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Event not found.");
         setEvent(data.event);
-        alert("Fetched image: " + data.event.image); // Debugging
       } catch (err) {
         setError(err.message);
       } finally {
