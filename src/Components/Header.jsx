@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -14,10 +15,18 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-6">
-          <a href="/" className="hover:underline">Home</a>
-          <a href="/explore" className="hover:underline">Explore</a>
-          <a href="/create-event" className="hover:underline">Create Event</a>
-          <a href="/login" className="hover:underline">Login</a>
+          <NavLink to="/" className="hover:underline">
+            Home
+          </NavLink>
+          <NavLink to="/explore" className="hover:underline">
+            Explore
+          </NavLink>
+          <NavLink to="/create-event" className="hover:underline">
+            Create Event
+          </NavLink>
+          <NavLink to="/login" className="hover:underline">
+            Login
+          </NavLink>
         </nav>
 
         {/* Hamburger Button — mobile only */}
@@ -34,10 +43,18 @@ export default function Header() {
       {/* Mobile Menu */}
       {menuOpen && (
         <nav className="md:hidden flex flex-col bg-gray-900 px-4 pb-4 gap-4">
-          <a href="/" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">Home</a>
-          <a href="/explore" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">Explore</a>
-          <a href="/create-event" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">Create Event</a>
-          <a href="/login" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2">Login</a>
+          <NavLink to="/" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">
+            Home
+          </NavLink>
+          <NavLink to="/explore" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">
+            Explore
+          </NavLink>
+          <NavLink to="/create-event" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2 border-b border-gray-700">
+            Create Event
+          </NavLink>
+          <NavLink to="/login" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2">
+            Login
+          </NavLink>
         </nav>
       )}
     </header>
