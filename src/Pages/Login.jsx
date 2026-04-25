@@ -78,7 +78,7 @@ export default function Login() {
         </div>
 
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Welcome to Book Event
+          Welcome to Karibu Event
         </h2>
 
         {/* Error message */}
