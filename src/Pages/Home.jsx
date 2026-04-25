@@ -61,75 +61,82 @@ function Home() {
     setTimeout(fetchEvents, 0);
   };
 
-  // FILTER COMPONENT
   const Filters = () => (
-    <div className="bg-white shadow-lg rounded-2xl p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
-      <input
-        className="border p-2 rounded"
-        placeholder="Event Name"
-        name="search"
-        value={filters.search}
-        onChange={handleFilterChange}
-      />
-      <input
-        className="border p-2 rounded"
-        placeholder="County"
-        name="county"
-        value={filters.county}
-        onChange={handleFilterChange}
-      />
-      <select
-        className="border p-2 rounded"
-        name="category"
-        value={filters.category}
-        onChange={handleFilterChange}
+  <div className="bg-white shadow-lg rounded-2xl p-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
+
+    <input
+      className="border p-2 rounded w-full text-sm"
+      placeholder="Event Name"
+      name="search"
+      value={filters.search}
+      onChange={handleFilterChange}
+    />
+
+    <input
+      className="border p-2 rounded w-full text-sm"
+      placeholder="County"
+      name="county"
+      value={filters.county}
+      onChange={handleFilterChange}
+    />
+
+    <select
+      className="border p-2 rounded w-full text-sm text-gray-600"
+      name="category"
+      value={filters.category}
+      onChange={handleFilterChange}
+    >
+      <option value="">All Types</option>
+      <option value="Music">Music</option>
+      <option value="Technology">Technology</option>
+      <option value="Business">Business</option>
+      <option value="Education">Education</option>
+      <option value="Sports">Sports</option>
+    </select>
+
+    <input
+      className="border p-2 rounded w-full text-sm"
+      placeholder="Min Price"
+      name="minPrice"
+      type="number"
+      value={filters.minPrice}
+      onChange={handleFilterChange}
+    />
+
+    <input
+      className="border p-2 rounded w-full text-sm"
+      placeholder="Max Price"
+      name="maxPrice"
+      type="number"
+      value={filters.maxPrice}
+      onChange={handleFilterChange}
+    />
+
+    <input
+      type="date"
+      className="border p-2 rounded w-full text-sm text-gray-600"
+      name="date"
+      value={filters.date}
+      onChange={handleFilterChange}
+    />
+
+    {/* Buttons span both columns on mobile */}
+    <div className="col-span-2 md:col-span-1 flex gap-2">
+      <button
+        onClick={handleSearch}
+        className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition text-sm"
       >
-        <option value="">All Types</option>
-        <option value="Music">Music</option>
-        <option value="Technology">Technology</option>
-        <option value="Business">Business</option>
-        <option value="Education">Education</option>
-        <option value="Sports">Sports</option>
-      </select>
-      <input
-        className="border p-2 rounded"
-        placeholder="Min Price"
-        name="minPrice"
-        type="number"
-        value={filters.minPrice}
-        onChange={handleFilterChange}
-      />
-      <input
-        className="border p-2 rounded"
-        placeholder="Max Price"
-        name="maxPrice"
-        type="number"
-        value={filters.maxPrice}
-        onChange={handleFilterChange}
-      />
-      <input
-        type="date"
-        className="border p-2 rounded"
-        name="date"
-        value={filters.date}
-        onChange={handleFilterChange}
-      />
-      <div className="flex gap-2">
-        <button
-          onClick={handleSearch}
-          className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded transition"
-        >
-          Search
-        </button>
-        <button
-          onClick={handleClearFilters}
-          className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 rounded transition"
-        >
-          Clear
-        </button>
-      </div>
+        Search
+      </button>
+      <button
+        onClick={handleClearFilters}
+        className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 rounded transition text-sm"
+      >
+        Clear
+      </button>
     </div>
-  );
+  </div>
+);
 
   // EVENT CARD
   const EventCard = ({ event }) => (
