@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -111,9 +112,9 @@ export default function Login() {
               required
             />
             <p className="text-right text-sm mt-1">
-              <a href="/forgot-password" className="text-orange-500 hover:underline font-semibold">
+              <NavLink to="/forgot-password" className="text-orange-500 hover:underline font-semibold">
                 Forgot Password?
-              </a>
+              </NavLink>
             </p>
           </div>
 
@@ -128,9 +129,9 @@ export default function Login() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           Don't have an account?{" "}
-          <a href="/register" className="text-orange-500 font-semibold hover:underline">
+          <NavLink to="/register" className="text-orange-500 font-semibold hover:underline">
             Register
-          </a>
+          </NavLink>
         </p>
       </div>
     </div>

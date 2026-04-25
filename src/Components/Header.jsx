@@ -1,4 +1,4 @@
-
+import { NavLink } from "react-router-dom";
 // HEADER COMPONENT
 export default function Header() {
   return (
@@ -7,10 +7,10 @@ export default function Header() {
         <img src="/logo.png" alt="Tiki Logo" className="h-10 object-contain" />
       </div>
       <nav className="flex gap-6">
-        <a href="/" className="hover:underline">Home</a>
-        <a href="/explore" className="hover:underline">Explore</a>
-        <a href="/create-event" className="hover:underline">Create Event</a>
-        <a href="/login" className="hover:underline">Login</a>
+        <NavLink to="/" className="hover:underline">Home</NavLink>
+        <NavLink to="/explore" className="hover:underline">Explore</NavLink>
+        <NavLink to="/create-event" className="hover:underline">Create Event</NavLink>
+        <NavLink to="/login" className="hover:underline">Login</NavLink>
       </nav>
     </header>
   );

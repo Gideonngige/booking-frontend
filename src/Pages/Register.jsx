@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -173,9 +174,9 @@ export default function Register() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           Already have an account?{" "}
-          <a href="/login" className="text-orange-500 font-semibold hover:underline">
+          <NavLink to="/login" className="text-orange-500 font-semibold hover:underline">
             Login
-          </a>
+          </NavLink>
         </p>
       </div>
     </div>

@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../firebase/config";
+import { NavLink } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -96,9 +97,9 @@ export default function ForgotPassword() {
 
         <p className="text-center text-gray-500 text-sm mt-4">
           Remembered your password?{" "}
-          <a href="/login" className="text-orange-500 font-semibold hover:underline">
+          <NavLink to="/login" className="text-orange-500 font-semibold hover:underline">
             Login
-          </a>
+          </NavLink>
         </p>
       </div>
     </div>
