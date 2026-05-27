@@ -1,8 +1,15 @@
-// AdminDashboard.jsx
 import React, { useState, useEffect } from "react";
-import { auth } from "../firebase/config";
+import { Navigate } from "react-router-dom";
+import api from "../Api/api";
 
 export default function AdminDashboard() {
+
+  const savedUser = JSON.parse(localStorage.getItem("user") || "{}");
+
+  if (!savedUser || savedUser.role !== "admin") {
+    return <Navigate to="/login" />;
+  }
+
   const [activeTab, setActiveTab] = useState("dashboard");
   const [stats, setStats] = useState(null);
   const [events, setEvents] = useState([]);
@@ -11,80 +18,117 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const getToken = async () => await auth.currentUser.getIdToken();
-
   const apiFetch = async (url, options = {}) => {
-    const token = await getToken();
-    const res = await fetch(`${import.meta.env.VITE_API_URL}${url}`, {
-      ...options,
+
+    const response = await api({
+      url,
+      method: options.method || "GET",
+      data: options.body ? JSON.parse(options.body) : null,
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        ...options.headers,
+        "User-Id": savedUser.user_id,
       },
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.message || "Request failed.");
-    return data;
+
+    return response.data;
   };
 
-  // Fetch based on active tab
   useEffect(() => {
+
     const load = async () => {
+
       setLoading(true);
       setError(null);
+
       try {
+
         if (activeTab === "dashboard") {
-          const data = await apiFetch("/api/admin/stats");
+
+          const data = await apiFetch("/api/admin/stats/");
           setStats(data);
+
         } else if (activeTab === "events") {
-          const data = await apiFetch("/api/admin/events");
+
+          const data = await apiFetch("/api/admin/events/");
           setEvents(data.events);
+
         } else if (activeTab === "users") {
-          const data = await apiFetch("/api/admin/users");
+
+          const data = await apiFetch("/api/admin/users/");
           setUsers(data.users);
+
         } else if (activeTab === "payouts") {
-          const data = await apiFetch("/api/admin/payouts");
+
+          const data = await apiFetch("/api/admin/payouts/");
           setPayouts(data.payouts);
         }
+
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
     };
+
     load();
+
   }, [activeTab]);
 
   const handleDeleteEvent = async (id) => {
-    if (!confirm("Delete this event? This cannot be undone.")) return;
+
+    if (!window.confirm("Delete this event?")) return;
+
     try {
-      await apiFetch(`/api/admin/events/${id}`, { method: "DELETE" });
+
+      await apiFetch(`/api/admin/events/${id}/`, {
+        method: "DELETE",
+      });
+
       setEvents((prev) => prev.filter((e) => e.id !== id));
+
     } catch (err) {
-      alert(err.message);
+      alert(err.response?.data?.message || err.message);
     }
   };
 
   const handleSuspendUser = async (id) => {
+
     try {
-      const data = await apiFetch(`/api/admin/users/${id}/suspend`, { method: "PATCH" });
+
+      const data = await apiFetch(`/api/admin/users/${id}/suspend/`, {
+        method: "PATCH",
+      });
+
       setUsers((prev) =>
-        prev.map((u) => (u.id === id ? { ...u, isSuspended: data.isSuspended } : u))
+        prev.map((u) =>
+          u.id === id
+            ? { ...u, isSuspended: data.isSuspended }
+            : u
+        )
       );
+
     } catch (err) {
-      alert(err.message);
+      alert(err.response?.data?.message || err.message);
     }
   };
 
   const handleMarkPaid = async (id) => {
+
     try {
-      await apiFetch(`/api/admin/payouts/${id}/pay`, { method: "PATCH" });
+
+      await apiFetch(`/api/admin/payouts/${id}/pay/`, {
+        method: "PATCH",
+      });
+
       setPayouts((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, isPaid: true } : p))
+        prev.map((p) =>
+          p.id === id
+            ? { ...p, isPaid: true }
+            : p
+        )
       );
+
     } catch (err) {
-      alert(err.message);
+      alert(err.response?.data?.message || err.message);
     }
   };
 
@@ -93,9 +137,14 @@ export default function AdminDashboard() {
 
       {/* Sidebar */}
       <div className="w-64 bg-white p-4 shadow-lg">
-        <h2 className="text-xl font-bold text-orange-500 mb-6">Admin Panel</h2>
+        <h2 className="text-xl font-bold text-orange-500 mb-6">
+          Admin Panel
+        </h2>
+
         <ul className="space-y-3">
+
           {["dashboard", "events", "users", "payouts"].map((tab) => (
+
             <li key={tab}>
               <button
                 onClick={() => setActiveTab(tab)}
@@ -108,7 +157,9 @@ export default function AdminDashboard() {
                 {tab}
               </button>
             </li>
+
           ))}
+
         </ul>
       </div>
 
@@ -300,6 +351,7 @@ export default function AdminDashboard() {
             )}
           </>
         )}
+
       </div>
     </div>
   );

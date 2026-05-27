@@ -27,6 +27,9 @@ export default function Header() {
           <NavLink to="/login" className="hover:underline">
             Login
           </NavLink>
+          <NavLink to="/register" className="hover:underline">
+            Register
+          </NavLink>
         </nav>
 
         {/* Hamburger Button — mobile only */}
@@ -54,6 +57,9 @@ export default function Header() {
           </NavLink>
           <NavLink to="/login" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2">
             Login
+          </NavLink>
+          <NavLink to="/register" onClick={() => setMenuOpen(false)} className="hover:text-orange-400 py-2">
+            Register
           </NavLink>
         </nav>
       )}

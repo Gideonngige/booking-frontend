@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './Components/ProtectedRoute';
+// import { AuthProvider } from './context/AuthContext';
+// import ProtectedRoute from './Components/ProtectedRoute';
 import Layout from './Components/Layout';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
@@ -15,7 +15,7 @@ import VerifyTickets from './Pages/VerifyTickets';
 
 function App() {
   return (
-    <AuthProvider>
+    // <AuthProvider>
     <Router>
       <Layout>
       <Routes>
@@ -24,16 +24,16 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/create-event" element={<CreateEvent />} />
-        <Route path="/creator-dashboard" element={<ProtectedRoute requiredRole="organizer"><CreatorDashboard /></ProtectedRoute>} />
-        <Route path="/admin-dashboard" element={<ProtectedRoute requiredRole="admin"><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/creator-dashboard" element={<CreatorDashboard />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/events/:id" element={<EventDetail />} />
-        <Route path="/verify-tickets/:eventId" element={<ProtectedRoute requiredRole="organizer"><VerifyTickets /></ProtectedRoute>} />
+        <Route path="/verify-tickets/:eventId" element={<VerifyTickets />} />
 
         {/* Add more routes as needed */}
       </Routes>
       </Layout>
     </Router>
-    </AuthProvider>
+    // </AuthProvider>
   );
 }
 

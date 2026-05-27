@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config/env';
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -30,7 +31,7 @@ function Home() {
       if (filters.date) params.append("date", filters.date);
 
       const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/all-events?${params.toString()}`
+        `${API_URL}/get_all_events?${params.toString()}`
       );
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch events.");
@@ -163,7 +164,7 @@ function Home() {
             Ksh {Number(event.price).toLocaleString()}
           </p>
           <span className="text-xs text-gray-400">
-            {event.availableTickets} tickets left
+            {event.available_tickets} tickets left
           </span>
         </div>
       </div>

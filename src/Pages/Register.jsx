@@ -1,75 +1,92 @@
 // RegisterPage.jsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
-import { NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
+import { API_URL } from "../config/env";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
-    fullName: "",
+    full_name: "",
     email: "",
-    phone: "",
+    phone_number: "",
+    role: "user",
     password: "",
     confirmPassword: "",
   });
+
   const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { signup } = useAuth();
-  const navigate = useNavigate();
-
+  // Handle input changes
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
 
-    // Basic validation
+    setError(null);
+    setSuccess(null);
+
+    // Validation
     if (formData.password !== formData.confirmPassword) {
       return setError("Passwords do not match.");
     }
+
     if (formData.password.length < 6) {
       return setError("Password must be at least 6 characters.");
     }
-    if (!formData.phone.match(/^(\+254|0)[17]\d{8}$/)) {
+
+    if (
+      !formData.phone_number.match(/^(\+254|0)[17]\d{8}$/)
+    ) {
       return setError("Enter a valid Kenyan phone number.");
     }
 
     setLoading(true);
 
     try {
-      // Step 1: Create user in Firebase Auth
-      const user = await signup(formData.email, formData.password);
-      if (!user) throw new Error("Firebase signup failed.");
+      const res = await fetch(
+        `${API_URL}/signup/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-      // Step 2: Get Firebase ID token
-      const token = await user.getIdToken();
-
-      // Step 3: Save extra user data to your Node.js backend
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-          firebaseUid: user.uid,
-        }),
-      });
+          body: JSON.stringify({
+            full_name: formData.full_name,
+            email: formData.email,
+            phone_number: formData.phone_number,
+            password: formData.password,
+            role: formData.role,
+          }),
+        }
+      );
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Backend registration failed.");
 
-      // Step 4: Redirect to dashboard
-      navigate("/creator-dashboard");
+      if (!res.ok) {
+        throw new Error(
+          data.message || "Registration failed"
+        );
+      }
+
+      setSuccess(data.message);
+
+      // Redirect after short delay
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+
     } catch (err) {
-      console.error("Registration error:", err);
-      alert(err);
+      console.log(err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -77,8 +94,10 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900 py-10 px-4">
+
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <div className="w-24 h-24 bg-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
@@ -90,20 +109,35 @@ export default function Register() {
           Create Your Account
         </h2>
 
-        {/* Error message */}
+        {/* Error */}
         {error && (
           <div className="bg-red-100 text-red-600 text-sm px-4 py-2 rounded-lg mb-4">
             {error}
           </div>
         )}
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        {/* Success */}
+        {success && (
+          <div className="bg-green-100 text-green-600 text-sm px-4 py-2 rounded-lg mb-4">
+            {success}
+          </div>
+        )}
+
+        <form
+          className="space-y-4"
+          onSubmit={handleSubmit}
+        >
+
+          {/* Full Name */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Full Name</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Full Name
+            </label>
+
             <input
               type="text"
-              name="fullName"
-              value={formData.fullName}
+              name="full_name"
+              value={formData.full_name}
               onChange={handleChange}
               placeholder="Enter your full name"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -111,8 +145,12 @@ export default function Register() {
             />
           </div>
 
+          {/* Email */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Email</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Email
+            </label>
+
             <input
               type="email"
               name="email"
@@ -124,12 +162,16 @@ export default function Register() {
             />
           </div>
 
+          {/* Phone */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Phone Number</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Phone Number
+            </label>
+
             <input
               type="tel"
-              name="phone"
-              value={formData.phone}
+              name="phone_number"
+              value={formData.phone_number}
               onChange={handleChange}
               placeholder="+254712345678"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
@@ -137,8 +179,34 @@ export default function Register() {
             />
           </div>
 
+          {/* Role */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Password</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Select Role
+            </label>
+
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="user">
+                User
+              </option>
+
+              <option value="organizer">
+                Organizer
+              </option>
+            </select>
+          </div>
+
+          {/* Password */}
+          <div>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Password
+            </label>
+
             <input
               type="password"
               name="password"
@@ -150,8 +218,12 @@ export default function Register() {
             />
           </div>
 
+          {/* Confirm Password */}
           <div>
-            <label className="block text-gray-700 font-semibold mb-2">Confirm Password</label>
+            <label className="block text-gray-700 font-semibold mb-2">
+              Confirm Password
+            </label>
+
             <input
               type="password"
               name="confirmPassword"
@@ -163,21 +235,31 @@ export default function Register() {
             />
           </div>
 
+          {/* Button */}
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-lg transition duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating account..." : "Register"}
+            {loading
+              ? "Creating account..."
+              : "Register"}
           </button>
+
         </form>
 
+        {/* Login */}
         <p className="text-center text-gray-500 text-sm mt-4">
           Already have an account?{" "}
-          <NavLink to="/login" className="text-orange-500 font-semibold hover:underline">
+
+          <NavLink
+            to="/login"
+            className="text-orange-500 font-semibold hover:underline"
+          >
             Login
           </NavLink>
         </p>
+
       </div>
     </div>
   );

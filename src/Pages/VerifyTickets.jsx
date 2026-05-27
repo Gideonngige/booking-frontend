@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { auth } from "../firebase/config";
 import { FaTicketAlt } from "react-icons/fa";
 import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { MdWarning } from "react-icons/md";
