@@ -17,6 +17,7 @@ export default function AdminDashboard() {
   const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sendingPayout, setSendingPayout] = useState(false);
 
   const apiFetch = async (url, options = {}) => {
 
@@ -111,26 +112,37 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleMarkPaid = async (id) => {
+  const handleMarkPaid = async (eventId) => {
+    setSendingPayout(true);
+  try {
+    const response = await api.post(
+      "/api/admin/pay_event_organizer/",
+      {
+        event_id: eventId,
+      },
+      {
+        headers: {
+          "User-Id": savedUser.user_id,
+        },
+      }
+    );
 
-    try {
+    alert(response.data.message);
 
-      await apiFetch(`/api/admin/payouts/${id}/pay/`, {
-        method: "PATCH",
-      });
+    // Refresh payouts list
+    const data = await apiFetch("/api/admin/payouts/");
+    setPayouts(data.payouts);
 
-      setPayouts((prev) =>
-        prev.map((p) =>
-          p.id === id
-            ? { ...p, isPaid: true }
-            : p
-        )
-      );
-
-    } catch (err) {
-      alert(err.response?.data?.message || err.message);
-    }
-  };
+  } catch (err) {
+    alert(
+      err.response?.data?.message ||
+      err.message ||
+      "Failed to send payout."
+    );
+  }finally {
+    setSendingPayout(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 flex">
@@ -309,6 +321,8 @@ export default function AdminDashboard() {
                       <th className="p-3 text-left">Revenue</th>
                       <th className="p-3 text-left">Commission (5%)</th>
                       <th className="p-3 text-left">Payable</th>
+                      <th className="p-3 text-left">Event date</th>
+                      <th className="p-3 text-left">Payment</th>
                       <th className="p-3 text-left">Action</th>
                     </tr>
                   </thead>
@@ -329,17 +343,23 @@ export default function AdminDashboard() {
                         <td className="p-3 text-green-600 font-bold">
                           KES {Number(p.payable).toLocaleString()}
                         </td>
+                        <td className="p-3 text-green-600 font-bold">
+                          {new Date(p.date).toLocaleDateString("en-KE")}
+                        </td>
+                        <td className="p-3 text-yellow-600 font-bold">
+                          {p.paymentStatus}
+                        </td>
                         <td className="p-3">
-                          {p.isPaid ? (
+                          {p.status === "paid" ? (
                             <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full font-semibold">
-                              Paid
+                               Paid
                             </span>
                           ) : (
                             <button
                               onClick={() => handleMarkPaid(p.id)}
                               className="bg-green-500 hover:bg-green-600 text-white text-sm px-3 py-1 rounded-lg transition"
                             >
-                              Mark Paid
+                            {sendingPayout ? "sending..." : "Send Payout"}
                             </button>
                           )}
                         </td>
