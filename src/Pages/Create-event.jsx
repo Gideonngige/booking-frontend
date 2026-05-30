@@ -141,6 +141,90 @@ export default function CreateEvent() {
     }
   };
 
+  const counties = [
+  "Mombasa",
+  "Kwale",
+  "Kilifi",
+  "Tana River",
+  "Lamu",
+  "Taita Taveta",
+  "Garissa",
+  "Wajir",
+  "Mandera",
+  "Marsabit",
+  "Isiolo",
+  "Meru",
+  "Tharaka Nithi",
+  "Embu",
+  "Kitui",
+  "Machakos",
+  "Makueni",
+  "Nyandarua",
+  "Nyeri",
+  "Kirinyaga",
+  "Murang'a",
+  "Kiambu",
+  "Turkana",
+  "West Pokot",
+  "Samburu",
+  "Trans Nzoia",
+  "Uasin Gishu",
+  "Elgeyo Marakwet",
+  "Nandi",
+  "Baringo",
+  "Laikipia",
+  "Nakuru",
+  "Narok",
+  "Kajiado",
+  "Kericho",
+  "Bomet",
+  "Kakamega",
+  "Vihiga",
+  "Bungoma",
+  "Busia",
+  "Siaya",
+  "Kisumu",
+  "Homa Bay",
+  "Migori",
+  "Kisii",
+  "Nyamira",
+  "Nairobi",
+];
+
+
+const categories = [
+  "Music",
+  "Technology",
+  "Business",
+  "Education",
+  "Sports",
+  "Entertainment",
+  "Fashion",
+  "Food & Drinks",
+  "Health & Wellness",
+  "Religious",
+  "Agriculture",
+  "Art & Culture",
+  "Comedy",
+  "Conference",
+  "Workshop",
+  "Seminar",
+  "Networking",
+  "Festival",
+  "Charity",
+  "Community",
+  "Career",
+  "Politics",
+  "Science",
+  "Travel",
+  "Gaming",
+  "Family",
+  "Exhibition",
+  "Startup",
+  "Film",
+  "Photography",
+];
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 flex items-center justify-center py-10 px-4">
 
@@ -224,35 +308,20 @@ export default function CreateEvent() {
             </label>
 
             <select
-              name="category"
-              value={formData.category}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
-              required
-            >
-              <option value="">Select category</option>
+  name="category"
+  value={formData.category}
+  onChange={handleChange}
+  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+  required
+>
+  <option value="">Select Category</option>
 
-              <option value="Music">
-                Music
-              </option>
-
-              <option value="Technology">
-                Technology
-              </option>
-
-              <option value="Business">
-                Business
-              </option>
-
-              <option value="Education">
-                Education
-              </option>
-
-              <option value="Sports">
-                Sports
-              </option>
-
-            </select>
+  {categories.map((category) => (
+    <option key={category} value={category}>
+      {category}
+    </option>
+  ))}
+</select>
 
           </div>
 
@@ -272,26 +341,11 @@ export default function CreateEvent() {
             >
               <option value="">Select county</option>
 
-              <option value="Nairobi">
-                Nairobi
-              </option>
-
-              <option value="Mombasa">
-                Mombasa
-              </option>
-
-              <option value="Kisumu">
-                Kisumu
-              </option>
-
-              <option value="Meru">
-                Meru
-              </option>
-
-              <option value="Kiambu">
-                Kiambu
-              </option>
-
+              {counties.map((county) => (
+                <option key={county} value={county}>
+                  {county}
+                </option>
+              ))}
             </select>
 
           </div>
