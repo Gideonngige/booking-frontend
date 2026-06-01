@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 
 import api from "../Api/api";
+import Swal from "sweetalert2";
 
 export default function CreatorDashboard() {
 
@@ -46,10 +47,16 @@ export default function CreatorDashboard() {
 
         console.log(err);
 
-        setError(
-          err.response?.data?.message ||
-          "Failed to fetch events"
-        );
+        // setError(
+        //   err.response?.data?.message ||
+        //   "Failed to fetch events"
+        // );
+        Swal.fire({
+          icon: "error",
+          title: "Failed to fetch events",
+          text: err.response?.data?.message ||
+            "An unexpected error occurred. Please try again.",
+        });
 
       } finally {
 
