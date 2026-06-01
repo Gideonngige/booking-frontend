@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/env';
+import Swal from 'sweetalert2';
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -38,6 +39,11 @@ function Home() {
       setEvents(data.events);
     } catch (err) {
       setError(err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to fetch events",
+        text: err.message || "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -152,10 +158,20 @@ const shareEvent = async (eventId, eventTitle) => {
       });
     } else {
       await navigator.clipboard.writeText(shareUrl);
-      alert("Event link copied to clipboard!");
+      // alert("Event link copied to clipboard!");
+      Swal.fire({
+        icon: "success",
+        title: "Link Copied",
+        text: "Event link copied to clipboard!",
+      });
     }
   } catch (error) {
     console.log(error);
+    Swal.fire({
+      icon: "error",
+      title: "Failed to share event",
+      text: error.message || "An unexpected error occurred. Please try again.",
+    });
   }
 };
 
