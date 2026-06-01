@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
+import Swal from "sweetalert2";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -36,17 +37,32 @@ export default function Register() {
 
     // Validation
     if (formData.password !== formData.confirmPassword) {
-      return setError("Passwords do not match.");
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Passwords do not match.",
+      });
+      return;
     }
 
-    if (formData.password.length < 6) {
-      return setError("Password must be at least 6 characters.");
+    if (formData.password.length < 8) {
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Password must be at least 8 characters.",
+      });
+      return;
     }
 
     if (
       !formData.phone_number.match(/^(\+254|0)[17]\d{8}$/)
     ) {
-      return setError("Enter a valid Kenyan phone number.");
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Enter a valid Kenyan phone number.",
+      });
+      return;
     }
 
     setLoading(true);
@@ -73,9 +89,12 @@ export default function Register() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(
-          data.message || "Registration failed"
-        );
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text: "Registration failed.",
+        });
+        // throw new Error(data.message || "Registration failed");
       }
 
       setSuccess(data.message);
@@ -87,7 +106,11 @@ export default function Register() {
 
     } catch (err) {
       console.log(err);
-      setError(err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setLoading(false);
     }

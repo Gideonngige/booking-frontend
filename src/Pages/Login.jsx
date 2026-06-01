@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -35,7 +36,13 @@ export default function Login() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "Login failed");
+        // throw new Error(data.message || "Login failed");
+        // use Swal to show error
+        Swal.fire({
+          icon: "error",
+          title: "Login Failed",
+          text: data.message || "Please check your credentials and try again.",
+        });
       }
 
       // Save tokens
@@ -55,7 +62,13 @@ export default function Login() {
       }
 
     } catch (err) {
-      setError(err.message);
+      // setError(err.message);
+      // use Swal to show error
+      Swal.fire({
+        icon: "error",
+        title: "Login Failed",
+        text: "An unexpected error occurred. Please check your credentials and try again.",
+      });
     } finally {
       setLoading(false);
     }

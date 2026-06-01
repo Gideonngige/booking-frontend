@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
+import Swal from "sweetalert2";
 
 export default function ForgotPassword() {
 
@@ -44,9 +45,15 @@ export default function ForgotPassword() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(
-          data.message || "Failed to send reset link"
-        );
+        // throw new Error(
+        //   data.message || "Failed to send reset link"
+        // );
+        // use Swal to show error
+        Swal.fire({
+          icon: "error",
+          title: "Failed to send reset link",
+          text: "Please check your email and try again.",
+        });
       }
 
       setSuccess(true);
@@ -55,7 +62,11 @@ export default function ForgotPassword() {
 
       console.log(err);
 
-      setError(err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to send reset link",
+        text: err.message || "An unexpected error occurred. Please try again.",
+      });
 
     } finally {
 
