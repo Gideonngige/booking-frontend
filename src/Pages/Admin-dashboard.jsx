@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import api from "../Api/api";
+import Swal from "sweetalert2";
 
 export default function AdminDashboard() {
 
@@ -64,7 +65,11 @@ export default function AdminDashboard() {
         }
 
       } catch (err) {
-        setError(err.response?.data?.message || err.message);
+        Swal.fire({
+          icon: "error",
+          title: "Failed to fetch data",
+          text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
@@ -87,7 +92,11 @@ export default function AdminDashboard() {
       setEvents((prev) => prev.filter((e) => e.id !== id));
 
     } catch (err) {
-      alert(err.response?.data?.message || err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to delete event",
+        text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+      });
     }
   };
 
@@ -108,7 +117,11 @@ export default function AdminDashboard() {
       );
 
     } catch (err) {
-      alert(err.response?.data?.message || err.message);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to suspend user",
+        text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+      });
     }
   };
 
@@ -127,18 +140,22 @@ export default function AdminDashboard() {
       }
     );
 
-    alert(response.data.message);
+    Swal.fire({
+      icon: "success",
+      title: "Payout Sent",
+      text: response.data.message,
+    });
 
     // Refresh payouts list
     const data = await apiFetch("/api/admin/payouts/");
     setPayouts(data.payouts);
 
   } catch (err) {
-    alert(
-      err.response?.data?.message ||
-      err.message ||
-      "Failed to send payout."
-    );
+    Swal.fire({
+      icon: "error",
+      title: "Failed to send payout",
+      text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+    });
   }finally {
     setSendingPayout(false);
   }
