@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 import api from "../Api/api";
+import Swal from "sweetalert2";
 
 function QRCodeImage({ bookingResult }) {
   const [qrSrc, setQrSrc] = useState("");
@@ -25,6 +26,11 @@ Amount: KES ${booking.total_amount || booking.totalAmount || ""}
         const qr = await QRCode.toDataURL(qrText.trim());
         setQrSrc(qr);
       } catch (err) {
+        Swal.fire({
+          icon: "error",
+          title: "Failed to generate QR code",
+          text: "An unexpected error occurred. Please try again.",
+        });
         console.error("QR generation failed:", err);
       }
     };
@@ -71,7 +77,12 @@ export default function EventDetail() {
         const res = await api.get(`/api/events/${id}`);
         setEvent(res.data.event);
       } catch (err) {
-        setError(err.response?.data?.message || err.message || "Failed to load event.");
+        // setError(err.response?.data?.message || err.message || "Failed to load event.");
+        Swal.fire({
+          icon: "error",
+          title: "Failed to load event",
+          text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+        });
       } finally {
         setLoading(false);
       }
@@ -102,10 +113,21 @@ export default function EventDetail() {
 
         if (res.data.payment_status === "failed") {
           setPaymentStatus("failed");
+          Swal.fire({
+            icon: "error",
+            title: "Payment Failed",
+            text: "Your payment was unsuccessful. Please try again.",
+          });
           clearInterval(interval);
         }
       } catch (error) {
         console.error("Polling error:", error);
+        Swal.fire({
+          icon: "error",
+          title: "Payment Status Error",
+          text: "An error occurred while checking payment status. Please check your booking later.",
+        });
+        clearInterval(interval);
       }
     }, 5000);
 
@@ -145,7 +167,12 @@ export default function EventDetail() {
         availableTickets: Number(prev.availableTickets) - Number(quantity),
       }));
     } catch (err) {
-      setBookingError(err.response?.data?.message || err.message || "Booking failed.");
+      // setBookingError(err.response?.data?.message || err.message || "Booking failed.");
+      Swal.fire({
+        icon: "error",
+        title: "Booking Failed",
+        text: err.response?.data?.message || err.message || "An unexpected error occurred. Please try again.",
+      });
     } finally {
       setBookingLoading(false);
     }
@@ -171,6 +198,11 @@ Amount: KES ${booking.total_amount || booking.totalAmount}
       document.body.removeChild(link);
     } catch (err) {
       console.error("QR generation failed:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to generate QR code",
+        text: "An unexpected error occurred. Please try again.",
+      });
     }
   };
 
