@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate, Navigate } from "react-router-dom";
 import api from "../Api/api";
+import Swal from "sweetalert2";
 
 export default function CreateEvent() {
 
@@ -129,10 +130,12 @@ export default function CreateEvent() {
 
       console.log(err);
 
-      setError(
-        err.response?.data?.message ||
-        "Failed to create event"
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Failed to create event",
+        text: err.response?.data?.message ||
+          "An unexpected error occurred. Please try again.",
+      });
 
     } finally {
 
