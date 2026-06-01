@@ -275,7 +275,7 @@ const categories = [
             <input
               type="text"
               name="title"
-              placeholder="Enter event title"
+              placeholder="e.g. Annual Nairobi Music Festival"
               value={formData.title}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -293,7 +293,7 @@ const categories = [
 
             <textarea
               name="description"
-              placeholder="Describe your event"
+              placeholder="e.g. Join us for an unforgettable night of music, food, and fun at the annual Nairobi Music Festival!..."
               value={formData.description}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -363,7 +363,7 @@ const categories = [
             <input
               type="text"
               name="location"
-              placeholder="Enter location"
+              placeholder="e.g. Makutano, Kinoru stadium, etc."
               value={formData.location}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -462,7 +462,7 @@ const categories = [
             <input
               type="text"
               name="organizer_name"
-              placeholder="Organizer name"
+              placeholder="e.g. Smart Events Ltd."
               value={formData.organizer_name}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -481,7 +481,7 @@ const categories = [
             <input
               type="email"
               name="contact_email"
-              placeholder="Enter contact email"
+              placeholder="e.g. info@yourcompany.com"
               value={formData.contact_email}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
