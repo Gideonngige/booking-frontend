@@ -20,6 +20,8 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const [sendingPayout, setSendingPayout] = useState(false);
 
+  const [selectedImage, setSelectedImage] = useState(null);
+
   const apiFetch = async (url, options = {}) => {
 
     const response = await api({
@@ -161,6 +163,58 @@ export default function AdminDashboard() {
   }
 };
 
+ const handleVerifyEvent = async (id) => {
+
+  const result = await Swal.fire({
+    title: "Verify Event?",
+    text: "This event will become visible as verified.",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Verify",
+    confirmButtonColor: "#f97316",
+  });
+
+  if (!result.isConfirmed) return;
+
+  try {
+
+    const response = await api.patch(
+      `/api/admin/events/${id}/verify/`,
+      {},
+      {
+        headers: {
+          "User-Id": savedUser.user_id,
+        },
+      }
+    );
+
+    Swal.fire({
+      icon: "success",
+      title: "Success",
+      text: response.data.message,
+    });
+
+    setEvents((prev) =>
+      prev.map((event) =>
+        event.id === id
+          ? { ...event, is_verified: true }
+          : event
+      )
+    );
+
+  } catch (err) {
+
+    Swal.fire({
+      icon: "error",
+      title: "Verification Failed",
+      text:
+        err.response?.data?.message ||
+        err.message,
+    });
+
+  }
+};
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 flex">
 
@@ -228,48 +282,97 @@ export default function AdminDashboard() {
               <Section title="All Events">
                 <table className="w-full text-left bg-white text-gray-800 rounded-xl overflow-hidden">
                   <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                    <tr>
-                      <th className="p-3">Title</th>
-                      <th className="p-3">Creator</th>
-                      <th className="p-3">Date</th>
-                      <th className="p-3">Price</th>
-                      <th className="p-3">Status</th>
-                      <th className="p-3">Action</th>
-                    </tr>
-                  </thead>
+  <tr>
+    <th className="p-3">Title</th>
+    <th className="p-3">Image</th>
+    <th className="p-3">Creator</th>
+    <th className="p-3">Date</th>
+    <th className="p-3">Price</th>
+    <th className="p-3">Status</th>
+    <th className="p-3">Verified</th>
+    <th className="p-3">Action</th>
+  </tr>
+</thead>
                   <tbody>
-                    {events.map((e) => (
-                      <tr key={e.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3 font-semibold">{e.title}</td>
-                        <td className="p-3 text-gray-600">{e.creator}</td>
-                        <td className="p-3 text-gray-600">
-                          {new Date(e.date).toLocaleDateString("en-KE")}
-                        </td>
-                        <td className="p-3 text-gray-600">
-                          KES {Number(e.price).toLocaleString()}
-                        </td>
-                        <td className="p-3">
-                          <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            e.status === "Active"
-                              ? "bg-green-100 text-green-600"
-                              : e.status === "Sold Out"
-                              ? "bg-red-100 text-red-600"
-                              : "bg-gray-100 text-gray-500"
-                          }`}>
-                            {e.status}
-                          </span>
-                        </td>
-                        <td className="p-3">
-                          <button
-                            onClick={() => handleDeleteEvent(e.id)}
-                            className="text-red-500 hover:underline text-sm font-semibold"
-                          >
-                            Delete
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+  {events.map((e) => (
+    <tr key={e.id} className="border-b hover:bg-gray-50">
+
+      <td className="p-3 font-semibold">
+        {e.title}
+      </td>
+
+      <td className="p-3">
+
+        <img
+          src={e.image}
+          alt={e.title}
+          onClick={() => setSelectedImage(e.image)}
+          className="w-16 h-16 object-cover rounded-lg cursor-pointer hover:scale-110 transition"
+        />
+
+      </td>
+
+      <td className="p-3">
+        {e.creator}
+      </td>
+
+      <td className="p-3">
+        {new Date(e.date).toLocaleDateString("en-KE")}
+      </td>
+
+      <td className="p-3">
+        KES {Number(e.price).toLocaleString()}
+      </td>
+
+      <td className="p-3">
+
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+            e.status === "Active"
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
+          }`}
+        >
+          {e.status}
+        </span>
+
+      </td>
+
+      <td className="p-3">
+
+        {e.is_verified ? (
+
+          <span className="bg-green-100 text-green-600 px-2 py-1 rounded-full text-xs">
+            Verified
+          </span>
+
+        ) : (
+
+          <button
+            onClick={() => handleVerifyEvent(e.id)}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg text-sm"
+          >
+            Verify
+          </button>
+
+        )}
+
+      </td>
+
+      <td className="p-3">
+
+        <button
+          onClick={() => handleDeleteEvent(e.id)}
+          className="text-red-500 hover:underline text-sm font-semibold"
+        >
+          Delete
+        </button>
+
+      </td>
+
+    </tr>
+  ))}
+</tbody>
                 </table>
               </Section>
             )}
@@ -390,6 +493,30 @@ export default function AdminDashboard() {
         )}
 
       </div>
+
+
+      {selectedImage && (
+  <div
+    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+    onClick={() => setSelectedImage(null)}
+  >
+    <img
+      src={selectedImage}
+      alt="Event"
+      className="max-w-[90%] max-h-[90%] rounded-xl shadow-2xl"
+    />
+
+    <button
+      onClick={() => setSelectedImage(null)}
+      className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+    >
+      Close
+    </button>
+  </div>
+)}
+
+
+
     </div>
   );
 }

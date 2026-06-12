@@ -121,10 +121,16 @@ export default function CreateEvent() {
 
       setSuccess(true);
 
+      Swal.fire({
+        icon: "success",
+        title: "Event Submitted Successfully!",
+        text: "Your event has been submitted for review. It will be visible to the public once approved by an administrator.",
+      });
+
       // Redirect
       setTimeout(() => {
         navigate("/creator-dashboard");
-      }, 2000);
+      }, 4000);
 
     } catch (err) {
 
