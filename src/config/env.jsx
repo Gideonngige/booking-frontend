@@ -1,1 +1,1 @@
-export const API_URL = "https://karibu-event-backend.onrender.com";
+export const API_URL = "https://karibu-event-backend-production.up.railway.app";
