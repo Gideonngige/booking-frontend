@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/env';
 import Swal from 'sweetalert2';
+import { Helmet } from "react-helmet-async";
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -244,6 +245,80 @@ const shareEvent = async (eventId, eventTitle) => {
 
   </div>
 );
+
+
+
+<>
+  <Helmet>
+    <title>
+      Karibu Event | Discover, Book & Share Events in Kenya
+    </title>
+
+    <meta
+      name="description"
+      content="Find concerts, business events, sports, technology conferences, educational workshops and more across Kenya. Book tickets online with Karibu Event."
+    />
+
+    <meta
+      name="keywords"
+      content="events in Kenya, Nairobi events, concerts Kenya, business events, sports events, event tickets Kenya, Karibu Event"
+    />
+
+    <meta
+      property="og:title"
+      content="Karibu Event | Discover Amazing Events in Kenya"
+    />
+
+    <meta
+      property="og:description"
+      content="Book tickets for concerts, conferences, workshops and sports events across Kenya."
+    />
+
+    <meta
+      property="og:image"
+      content="https://www.karibuevent.online/logo.png"
+    />
+
+    <meta
+      property="og:url"
+      content="https://www.karibuevent.online"
+    />
+
+    <meta property="og:type" content="website" />
+
+    <meta
+      name="twitter:card"
+      content="summary_large_image"
+    />
+
+    <link
+      rel="canonical"
+      href="https://www.karibuevent.online/"
+    />
+
+    <script type="application/ld+json">
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Karibu Event",
+  "url": "https://www.karibuevent.online",
+  "description":
+    "Discover and book events across Kenya.",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target":
+      "https://www.karibuevent.online/?search={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+})}
+</script>
+  </Helmet>
+
+  {/* Existing Home Page */}
+  <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
+    ...
+  </div>
+</>
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">

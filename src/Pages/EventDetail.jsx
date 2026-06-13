@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import QRCode from "qrcode";
 import api from "../Api/api";
 import Swal from "sweetalert2";
+import { Helmet } from "react-helmet-async";
 
 function QRCodeImage({ bookingResult }) {
   const [qrSrc, setQrSrc] = useState("");
@@ -225,6 +226,42 @@ Amount: KES ${booking.total_amount || booking.totalAmount}
   const isSoldOut = Number(event.availableTickets) === 0;
   const isPast = new Date(event.date) < new Date();
   const totalCost = Number(event.price) * quantity;
+
+
+  // seo
+  <Helmet>
+  <title>{event.title} | Karibu Event</title>
+
+  <meta
+    name="description"
+    content={event.description}
+  />
+
+  <meta
+    property="og:title"
+    content={event.title}
+  />
+
+  <meta
+    property="og:description"
+    content={event.description}
+  />
+
+  <meta
+    property="og:image"
+    content={event.image}
+  />
+
+  <meta
+    property="og:url"
+    content={`https://www.karibuevent.online/events/${event.id}`}
+  />
+
+  <link
+    rel="canonical"
+    href={`https://www.karibuevent.online/events/${event.id}`}
+  />
+</Helmet>
 
   return (
     <div className="min-h-screen bg-gray-100">
