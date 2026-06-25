@@ -13,6 +13,8 @@ import AdminDashboard from './Pages/Admin-dashboard';
 import EventDetail from './Pages/EventDetail';
 import VerifyTickets from './Pages/VerifyTickets';
 
+import Explore from './Pages/Explore';
+
 function App() {
   return (
     // <AuthProvider>
@@ -28,6 +30,7 @@ function App() {
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/verify-tickets/:eventId" element={<VerifyTickets />} />
+        <Route path="/explore" element={<Explore />} />
 
         {/* Add more routes as needed */}
       </Routes>
