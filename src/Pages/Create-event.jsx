@@ -240,7 +240,7 @@ const categories = [
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
 
         {/* Title */}
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+        <h2 className="text-3xl font-bold text-center text-orange-500 mb-6">
           Create New Event
         </h2>
 
@@ -369,7 +369,7 @@ const categories = [
             <input
               type="text"
               name="location"
-              placeholder="e.g. Makutano, Kinoru stadium, etc."
+              placeholder="e.g. Nairobi, City stadium, etc."
               value={formData.location}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -487,7 +487,7 @@ const categories = [
             <input
               type="email"
               name="contact_email"
-              placeholder="e.g. info@yourcompany.com"
+              placeholder="e.g. johndoe@example.com"
               value={formData.contact_email}
               onChange={handleChange}
               className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
@@ -500,7 +500,7 @@ const categories = [
           <div>
 
             <label className="block font-semibold text-gray-700 mb-1">
-              Event Image
+              Event Image or Poster
             </label>
 
             <input
