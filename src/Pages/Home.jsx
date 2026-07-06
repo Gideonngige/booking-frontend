@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/env';
 import Swal from 'sweetalert2';
 import { Helmet } from "react-helmet-async";
+import FloatingParticles from "../Components/Floating-particles";
 
 function Home() {
   const [events, setEvents] = useState([]);
@@ -322,6 +323,8 @@ const shareEvent = async (eventId, eventTitle) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-100 to-gray-200">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       {/* HERO */}
       <div className="bg-gradient-to-r from-orange-500 to-gray-900 text-white p-10 text-center">

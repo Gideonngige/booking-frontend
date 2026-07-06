@@ -4,6 +4,7 @@ import { useNavigate, NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
+import FloatingParticles from "../Components/Floating-particles";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -122,6 +123,8 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900 py-10 px-4">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 

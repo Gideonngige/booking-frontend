@@ -6,6 +6,7 @@ import QRCode from "qrcode";
 import api from "../Api/api";
 import Swal from "sweetalert2";
 import { Helmet } from "react-helmet-async";
+import FloatingParticles from "../Components/Floating-particles";
 
 function QRCodeImage({ bookingResult }) {
   const [qrSrc, setQrSrc] = useState("");
@@ -265,6 +266,8 @@ Amount: KES ${booking.total_amount || booking.totalAmount}
 
   return (
     <div className="min-h-screen bg-gray-100">
+      {/* Floating particles */}
+      <FloatingParticles />
       {/* Banner */}
       <div className="relative w-full h-72 md:h-96">
         <img

@@ -5,6 +5,8 @@ import { API_URL } from "../config/env";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 
+import FloatingParticles from "../Components/Floating-particles";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,6 +80,8 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900">
+      {/* Floating particles */}
+        <FloatingParticles />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mb-10">
 
         {/* Logo */}

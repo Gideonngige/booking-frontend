@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import api from "../Api/api";
 import Swal from "sweetalert2";
+import FloatingParticles from "../Components/Floating-particles";
 
 export default function AdminDashboard() {
 
@@ -217,6 +218,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 flex">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       {/* Sidebar */}
       <div className="w-64 bg-white p-4 shadow-lg">

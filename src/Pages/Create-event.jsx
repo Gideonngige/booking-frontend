@@ -4,6 +4,8 @@ import { useNavigate, Navigate } from "react-router-dom";
 import api from "../Api/api";
 import Swal from "sweetalert2";
 
+import FloatingParticles from "../Components/Floating-particles";
+
 export default function CreateEvent() {
 
   // Get logged in user
@@ -236,6 +238,8 @@ const categories = [
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-500 to-gray-900 flex items-center justify-center py-10 px-4">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       <div className="w-full max-w-3xl bg-white rounded-2xl shadow-xl p-8">
 

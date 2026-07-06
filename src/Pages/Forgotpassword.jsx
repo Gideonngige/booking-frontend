@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
 import Swal from "sweetalert2";
+import FloatingParticles from "../Components/Floating-particles";
 
 export default function ForgotPassword() {
 
@@ -77,6 +78,8 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900 px-4">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useNavigate, Navigate } from "react-router-dom";
+import FloatingParticles from "../Components/Floating-particles";
 
 import api from "../Api/api";
 import Swal from "sweetalert2";
@@ -102,6 +103,8 @@ export default function CreatorDashboard() {
   return (
 
     <div className="min-h-screen bg-gradient-to-r from-orange-500 to-gray-900 p-6">
+      {/* Floating particles */}
+      <FloatingParticles />
 
       {/* Header */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
