@@ -13,6 +13,9 @@ import AdminDashboard from './Pages/Admin-dashboard';
 import EventDetail from './Pages/EventDetail';
 import VerifyTickets from './Pages/VerifyTickets';
 
+import PrivacyPolicy from './Pages/Privacy-policy';
+import TermsOfService from './Pages/Terms-of-service';
+
 import Explore from './Pages/Explore';
 
 function App() {
@@ -31,6 +34,8 @@ function App() {
         <Route path="/events/:id" element={<EventDetail />} />
         <Route path="/verify-tickets/:eventId" element={<VerifyTickets />} />
         <Route path="/explore" element={<Explore />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-of-service" element={<TermsOfService />} />
 
         {/* Add more routes as needed */}
       </Routes>

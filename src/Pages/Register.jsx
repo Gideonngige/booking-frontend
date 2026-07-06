@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
 import Swal from "sweetalert2";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -19,6 +20,9 @@ export default function Register() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -225,38 +229,72 @@ export default function Register() {
           </div>
 
           {/* Password */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Password
-            </label>
+          {/* Password */}
+<div>
+  <label className="block text-gray-700 font-semibold mb-2">
+    Password
+  </label>
 
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              required
-            />
-          </div>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      name="password"
+      value={formData.password}
+      onChange={handleChange}
+      placeholder="Enter your password"
+      className="w-full px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    />
+
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-orange-500 transition-colors"
+      aria-label={showPassword ? "Hide password" : "Show password"}
+    >
+      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+    </button>
+  </div>
+</div>
 
           {/* Confirm Password */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Confirm Password
-            </label>
+          {/* Confirm Password */}
+<div>
+  <label className="block text-gray-700 font-semibold mb-2">
+    Confirm Password
+  </label>
 
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              required
-            />
-          </div>
+  <div className="relative">
+    <input
+      type={showConfirmPassword ? "text" : "password"}
+      name="confirmPassword"
+      value={formData.confirmPassword}
+      onChange={handleChange}
+      placeholder="Confirm your password"
+      className="w-full px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    />
+
+    <button
+      type="button"
+      onClick={() =>
+        setShowConfirmPassword(!showConfirmPassword)
+      }
+      className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-orange-500 transition-colors"
+      aria-label={
+        showConfirmPassword
+          ? "Hide password"
+          : "Show password"
+      }
+    >
+      {showConfirmPassword ? (
+        <EyeOff size={20} />
+      ) : (
+        <Eye size={20} />
+      )}
+    </button>
+  </div>
+</div>
 
           {/* Button */}
           <button
@@ -281,6 +319,11 @@ export default function Register() {
           >
             Login
           </NavLink>
+        </p>
+
+        {/* create a note for user to make sure the phone number is correct */}
+        <p className="text-center text-orange-500 text-sm mt-2">
+          Please ensure your phone number is correct. If you are event organizer, it will be used to send event's money.
         </p>
 
       </div>

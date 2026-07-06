@@ -1,4 +1,6 @@
 // FOOTER COMPONENT
+import { Link } from "react-router-dom";
+
 export default function Footer() {
   const year = new Date().getFullYear();
 
@@ -51,9 +53,39 @@ export default function Footer() {
       </div>
 
       {/* Bottom */}
-      <div className="mt-10 border-t border-gray-700 pt-4 text-center text-gray-500 text-sm">
-        © {year} Karibu Event. All rights reserved.
-      </div>
+<div className="mt-10 border-t border-gray-700 pt-6">
+  <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+    <p className="text-gray-500 text-sm text-center md:text-left">
+  © {year} Karibu Event. All rights reserved. A product of  {" "}
+  <a
+    href="https://nexinditechcompany.online"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
+  >
+    Nexind Tech Company
+  </a>
+</p>
+
+    <div className="flex items-center gap-3 text-sm">
+      <Link
+        to="/privacy-policy"
+        className="text-gray-400 hover:text-orange-500 transition-colors duration-200"
+      >
+        Privacy Policy
+      </Link>
+
+      <span className="text-gray-600">|</span>
+
+      <Link
+        to="/terms-of-service"
+        className="text-gray-400 hover:text-orange-500 transition-colors duration-200 mr-4"
+      >
+        Terms of Service
+      </Link>
+    </div>
+  </div>
+</div>
     </footer>
   );
 };

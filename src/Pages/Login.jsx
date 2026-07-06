@@ -3,12 +3,14 @@ import React, { useState } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { API_URL } from "../config/env";
 import Swal from "sweetalert2";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
 
@@ -115,29 +117,40 @@ export default function Login() {
           </div>
 
           {/* Password */}
-          <div>
-            <label className="block text-gray-700 font-semibold mb-2">
-              Password
-            </label>
+<div>
+  <label className="block text-gray-700 font-semibold mb-2">
+    Password
+  </label>
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-              required
-            />
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"}
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      placeholder="Enter your password"
+      className="w-full px-4 py-2 pr-12 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+      required
+    />
 
-            <p className="text-right text-sm mt-1">
-              <NavLink
-                to="/forgot-password"
-                className="text-orange-500 hover:underline font-semibold"
-              >
-                Forgot Password?
-              </NavLink>
-            </p>
-          </div>
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-orange-500 transition-colors"
+      aria-label={showPassword ? "Hide password" : "Show password"}
+    >
+      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+    </button>
+  </div>
+
+  <p className="text-right text-sm mt-1">
+    <NavLink
+      to="/forgot-password"
+      className="text-orange-500 hover:underline font-semibold"
+    >
+      Forgot Password?
+    </NavLink>
+  </p>
+</div>
 
           {/* Button */}
           <button
