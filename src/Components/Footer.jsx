@@ -63,7 +63,7 @@ export default function Footer() {
     rel="noopener noreferrer"
     className="text-orange-500 hover:text-orange-600 font-medium transition-colors"
   >
-    Nexind Tech Company
+    Nexindi Tech Company
   </a>
 </p>
 
