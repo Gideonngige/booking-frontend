@@ -79,10 +79,10 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900 py-10 px-4">
       {/* Floating particles */}
         <FloatingParticles />
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mb-10">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
 
         {/* Logo */}
         <div className="flex justify-center mb-6">
