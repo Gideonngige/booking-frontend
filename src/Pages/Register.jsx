@@ -33,93 +33,168 @@ export default function Register() {
     });
   };
 
-  // Submit form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
 
-    setError(null);
-    setSuccess(null);
+  // submit
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Validation
-    if (formData.password !== formData.confirmPassword) {
+  setError(null);
+  setSuccess(null);
+
+  // Validate passwords
+  if (formData.password !== formData.confirmPassword) {
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: "Passwords do not match.",
+    });
+    return;
+  }
+
+  // Validate password length
+  if (formData.password.length < 8) {
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: "Password must be at least 8 characters.",
+    });
+    return;
+  }
+
+  // Validate Kenyan phone number
+  if (!formData.phone_number.match(/^(\+254|0)[17]\d{8}$/)) {
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: "Enter a valid Kenyan phone number.",
+    });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // =========================
+    // REGISTER USER
+    // =========================
+
+    const signupRes = await fetch(`${API_URL}/signup/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        full_name: formData.full_name,
+        email: formData.email,
+        phone_number: formData.phone_number,
+        password: formData.password,
+        role: formData.role,
+      }),
+    });
+
+    const signupData = await signupRes.json();
+
+    if (!signupRes.ok) {
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: "Passwords do not match.",
+        text:
+          signupData.message ||
+          signupData.error ||
+          "Registration failed.",
       });
+
       return;
     }
 
-    if (formData.password.length < 8) {
+    setSuccess(signupData.message);
+
+    // =========================
+    // AUTO LOGIN
+    // =========================
+
+    const loginRes = await fetch(`${API_URL}/signin/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.email,
+        password: formData.password,
+      }),
+    });
+
+    const loginData = await loginRes.json();
+
+    if (!loginRes.ok) {
       Swal.fire({
         icon: "error",
-        title: "Registration Failed",
-        text: "Password must be at least 8 characters.",
+        title: "Login Failed",
+        text:
+          loginData.message ||
+          loginData.error ||
+          "Account created, but automatic login failed.",
       });
+
       return;
     }
 
-    if (
-      !formData.phone_number.match(/^(\+254|0)[17]\d{8}$/)
-    ) {
+    // Validate expected login response
+    if (!loginData.access_token || !loginData.user) {
       Swal.fire({
         icon: "error",
-        title: "Registration Failed",
-        text: "Enter a valid Kenyan phone number.",
+        title: "Login Failed",
+        text: "Invalid response received from the server.",
       });
+
       return;
     }
 
-    setLoading(true);
+    // Save tokens
+    localStorage.setItem("access_token", loginData.access_token);
 
-    try {
-      const res = await fetch(
-        `${API_URL}/signup/`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify({
-            full_name: formData.full_name,
-            email: formData.email,
-            phone_number: formData.phone_number,
-            password: formData.password,
-            role: formData.role,
-          }),
-        }
+    if (loginData.refresh_token) {
+      localStorage.setItem(
+        "refresh_token",
+        loginData.refresh_token
       );
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        Swal.fire({
-          icon: "error",
-          title: "Registration Failed",
-          text: "Registration failed.",
-        });
-        // throw new Error(data.message || "Registration failed");
-      }
-
-      setSuccess(data.message);
-
-      // Redirect after short delay
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-
-    } catch (err) {
-      console.log(err);
-      Swal.fire({
-        icon: "error",
-        title: "Registration Failed",
-        text: "An unexpected error occurred. Please try again.",
-      });
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // Save user
+    localStorage.setItem(
+      "user",
+      JSON.stringify(loginData.user)
+    );
+
+    // Show success
+    await Swal.fire({
+      icon: "success",
+      title: "Registration Successful",
+      text: "Your account has been created successfully.",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+
+    // Redirect based on role
+    if (loginData.user.role === "admin") {
+      navigate("/admin-dashboard");
+    } else if (loginData.user.role === "organizer") {
+      navigate("/creator-dashboard");
+    } else {
+      navigate("/");
+    }
+  } catch (err) {
+    console.error("Registration error:", err);
+
+    Swal.fire({
+      icon: "error",
+      title: "Registration Failed",
+      text: "An unexpected error occurred. Please try again.",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-500 to-gray-900 py-10 px-4">
