@@ -12,6 +12,9 @@ import CreatorDashboard from './Pages/Creator-dashboard';
 import AdminDashboard from './Pages/Admin-dashboard';
 import EventDetail from './Pages/EventDetail';
 import VerifyTickets from './Pages/VerifyTickets';
+import PromoCodes from "./Pages/PromoCodes";
+import EventAnalytics from "./Pages/EventAnalytics";
+import EventAttendees from "./Pages/EventAttendees";
 
 import PrivacyPolicy from './Pages/Privacy-policy';
 import TermsOfService from './Pages/Terms-of-service';
@@ -36,6 +39,10 @@ function App() {
         <Route path="/explore" element={<Explore />} />
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/terms-of-service" element={<TermsOfService />} />
+
+        <Route path="/event/:id/promo-codes" element={<PromoCodes />}/>
+        <Route path="/event/:id/attendees" element={<EventAttendees />}/>
+        <Route path="/event/:id/analytics" element={<EventAnalytics />}/>
 
         {/* Add more routes as needed */}
       </Routes>
