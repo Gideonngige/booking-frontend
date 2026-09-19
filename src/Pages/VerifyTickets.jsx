@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import {
   FaTicketAlt,
   FaCheckCircle,
@@ -49,8 +49,11 @@ export default function VerifyTickets() {
   const [manualReference, setManualReference] = useState("");
   const [manualLoading, setManualLoading] = useState(false);
 
+  // const scannerRef = useRef(null);
+  // const scanLockedRef = useRef(false);
+
   const scannerRef = useRef(null);
-  const scanLockedRef = useRef(false);
+const scanLockedRef = useRef(false);
 
   /* =========================================================
      CURRENT USER
@@ -382,146 +385,189 @@ export default function VerifyTickets() {
      START SCANNER
   ========================================================= */
 
-  const startScanner = () => {
-    /*
-      Prevent creating multiple scanner instances.
-    */
+const startScanner = async () => {
+  if (scanning) return;
 
-    if (scanning) {
+  setScanResult(null);
+  setScanStatus(null);
+  scanLockedRef.current = false;
+
+  try {
+    // Camera only works in a secure browser context
+    if (
+      window.location.protocol !== "https:" &&
+      window.location.hostname !== "localhost"
+    ) {
+      Swal.fire({
+        icon: "warning",
+        title: "HTTPS Required",
+        text: "Camera access requires HTTPS. Open Karibu Event using the HTTPS version of the website.",
+        confirmButtonColor: "#f97316",
+      });
+
       return;
     }
 
-    setScanResult(null);
-    setScanStatus(null);
+    // Check browser camera support
+    if (!navigator.mediaDevices?.getUserMedia) {
+      Swal.fire({
+        icon: "error",
+        title: "Camera Not Supported",
+        text: "This browser does not support camera access. Try Chrome, Safari, or another modern browser.",
+        confirmButtonColor: "#f97316",
+      });
 
-    scanLockedRef.current = false;
+      return;
+    }
+
+    // Ask for permission before creating scanner
+    const permissionStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+    });
+
+    // Stop permission-test stream immediately
+    permissionStream.getTracks().forEach((track) => track.stop());
 
     setScanning(true);
 
-    /*
-      Wait for #qr-reader to render.
-    */
+    // Wait until React renders #qr-reader
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
-    setTimeout(() => {
-      try {
-        const scanner =
-          new Html5QrcodeScanner(
-            "qr-reader",
-            {
-              fps: 10,
+    const readerElement = document.getElementById("qr-reader");
 
-              qrbox: {
-                width: 250,
-                height: 250,
-              },
-
-              rememberLastUsedCamera: true,
-
-              supportedScanTypes: undefined,
-            },
-            false
-          );
-
-        scannerRef.current =
-          scanner;
-
-        scanner.render(
-          async (decodedText) => {
-            /*
-              Camera can detect the same QR
-              several times before clear()
-              completes.
-
-              Lock immediately.
-            */
-
-            if (
-              scanLockedRef.current
-            ) {
-              return;
-            }
-
-            scanLockedRef.current =
-              true;
-
-            try {
-              if (
-                scannerRef.current
-              ) {
-                await scannerRef.current.clear();
-
-                scannerRef.current =
-                  null;
-              }
-            } catch (err) {
-              console.warn(
-                "Scanner clear warning:",
-                err
-              );
-            }
-
-            setScanning(false);
-
-            await verifyQRCode(
-              decodedText
-            );
-          },
-
-          () => {
-            /*
-              html5-qrcode calls this continuously
-              when it cannot find a QR.
-
-              Do not show errors here.
-            */
-          }
-        );
-      } catch (err) {
-        console.error(
-          "Failed to start scanner:",
-          err
-        );
-
-        setScanning(false);
-
-        scannerRef.current =
-          null;
-
-        Swal.fire({
-          icon: "error",
-          title: "Scanner Error",
-          text:
-            "Unable to start the camera. Please check your camera permissions.",
-          confirmButtonColor: "#f97316",
-        });
-      }
-    }, 150);
-  };
-
-  /* =========================================================
-     STOP SCANNER
-  ========================================================= */
-
-  const stopScanner = async () => {
-    try {
-      if (scannerRef.current) {
-        await scannerRef.current.clear();
-
-        scannerRef.current =
-          null;
-      }
-    } catch (err) {
-      console.warn(
-        "Scanner stop warning:",
-        err
-      );
+    if (!readerElement) {
+      throw new Error("QR scanner container was not found.");
     }
 
-    scanLockedRef.current =
-      false;
+    const scanner = new Html5Qrcode("qr-reader");
+
+    scannerRef.current = scanner;
+
+    // Try to use rear camera on mobile
+    await scanner.start(
+      {
+        facingMode: {
+          ideal: "environment",
+        },
+      },
+      {
+        fps: 10,
+
+        qrbox: (viewfinderWidth, viewfinderHeight) => {
+          const minEdge = Math.min(
+            viewfinderWidth,
+            viewfinderHeight
+          );
+
+          const size = Math.floor(minEdge * 0.7);
+
+          return {
+            width: size,
+            height: size,
+          };
+        },
+
+        aspectRatio: 1.333334,
+      },
+
+      async (decodedText) => {
+        if (scanLockedRef.current) return;
+
+        scanLockedRef.current = true;
+
+        console.log("QR scanned:", decodedText);
+
+        await stopScanner();
+
+        await verifyQRCode(decodedText);
+      },
+
+      () => {
+        // This callback fires continuously while no QR is detected.
+        // Do not show an error here.
+      }
+    );
+  } catch (err) {
+    console.error("CAMERA START ERROR:", err);
 
     setScanning(false);
-  };
+
+    scanLockedRef.current = false;
+
+    if (scannerRef.current) {
+      try {
+        if (scannerRef.current.isScanning) {
+          await scannerRef.current.stop();
+        }
+
+        scannerRef.current.clear();
+      } catch (clearError) {
+        console.warn("Scanner cleanup error:", clearError);
+      }
+
+      scannerRef.current = null;
+    }
+
+    let message =
+      "Unable to open the camera. Please check your camera permissions.";
+
+    if (
+      err?.name === "NotAllowedError" ||
+      err?.name === "PermissionDeniedError"
+    ) {
+      message =
+        "Camera permission was denied. Allow camera access for Karibu Event in your browser settings and try again.";
+    } else if (
+      err?.name === "NotFoundError" ||
+      err?.name === "DevicesNotFoundError"
+    ) {
+      message =
+        "No camera was found on this device.";
+    } else if (
+      err?.name === "NotReadableError" ||
+      err?.name === "TrackStartError"
+    ) {
+      message =
+        "Your camera is currently being used by another application. Close other apps using the camera and try again.";
+    } else if (err?.name === "OverconstrainedError") {
+      message =
+        "The requested camera is not available. Try another camera.";
+    } else if (err?.message) {
+      message = err.message;
+    }
+
+    Swal.fire({
+      icon: "error",
+      title: "Camera Could Not Start",
+      text: message,
+      confirmButtonColor: "#f97316",
+    });
+  }
+};
+
+const stopScanner = async () => {
+  try {
+    const scanner = scannerRef.current;
+
+    if (scanner) {
+      if (scanner.isScanning) {
+        await scanner.stop();
+      }
+
+      scanner.clear();
+
+      scannerRef.current = null;
+    }
+  } catch (err) {
+    console.warn("Scanner stop warning:", err);
+
+    scannerRef.current = null;
+  }
+
+  scanLockedRef.current = false;
+
+  setScanning(false);
+};
 
   /* =========================================================
      MANUAL VERIFY
