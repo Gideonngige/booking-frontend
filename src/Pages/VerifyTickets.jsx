@@ -386,70 +386,94 @@ const scanLockedRef = useRef(false);
   ========================================================= */
 
 const startScanner = async () => {
-  if (scanning) return;
+  if (scanning || scannerRef.current) {
+    return;
+  }
 
   setScanResult(null);
   setScanStatus(null);
   scanLockedRef.current = false;
 
-  try {
-    // Camera only works in a secure browser context
-    if (
-      window.location.protocol !== "https:" &&
-      window.location.hostname !== "localhost"
-    ) {
-      Swal.fire({
-        icon: "warning",
-        title: "HTTPS Required",
-        text: "Camera access requires HTTPS. Open Karibu Event using the HTTPS version of the website.",
-        confirmButtonColor: "#f97316",
-      });
+  // Camera requires HTTPS, except localhost
+  const isSecure =
+    window.isSecureContext ||
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1";
 
-      return;
-    }
-
-    // Check browser camera support
-    if (!navigator.mediaDevices?.getUserMedia) {
-      Swal.fire({
-        icon: "error",
-        title: "Camera Not Supported",
-        text: "This browser does not support camera access. Try Chrome, Safari, or another modern browser.",
-        confirmButtonColor: "#f97316",
-      });
-
-      return;
-    }
-
-    // Ask for permission before creating scanner
-    const permissionStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+  if (!isSecure) {
+    Swal.fire({
+      icon: "warning",
+      title: "Secure Connection Required",
+      text: "Camera access requires HTTPS. Use the deployed HTTPS website or localhost.",
+      confirmButtonColor: "#f97316",
     });
 
-    // Stop permission-test stream immediately
-    permissionStream.getTracks().forEach((track) => track.stop());
+    return;
+  }
 
+  if (!navigator.mediaDevices?.getUserMedia) {
+    Swal.fire({
+      icon: "error",
+      title: "Camera Not Supported",
+      text: "Your browser does not support camera access.",
+      confirmButtonColor: "#f97316",
+    });
+
+    return;
+  }
+
+  try {
+    /*
+      Render the scanner container first.
+    */
     setScanning(true);
 
-    // Wait until React renders #qr-reader
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    /*
+      Wait for React to render:
 
-    const readerElement = document.getElementById("qr-reader");
+      <div id="qr-reader" />
+    */
+    await new Promise((resolve) =>
+      setTimeout(resolve, 300)
+    );
+
+    const readerElement =
+      document.getElementById("qr-reader");
 
     if (!readerElement) {
-      throw new Error("QR scanner container was not found.");
+      throw new Error(
+        "QR scanner container was not found."
+      );
     }
 
-    const scanner = new Html5Qrcode("qr-reader");
+    /*
+      Create scanner.
+    */
+    const scanner =
+      new Html5Qrcode("qr-reader");
 
     scannerRef.current = scanner;
 
-    // Try to use rear camera on mobile
+    /*
+      IMPORTANT:
+
+      html5-qrcode accepts:
+
+      { facingMode: "environment" }
+
+      or:
+
+      { facingMode: { exact: "environment" } }
+
+      Do NOT use:
+      { facingMode: { ideal: "environment" } }
+    */
+
     await scanner.start(
       {
-        facingMode: {
-          ideal: "environment",
-        },
+        facingMode: "environment",
       },
+
       {
         fps: 10,
 
@@ -459,7 +483,9 @@ const startScanner = async () => {
             viewfinderHeight
           );
 
-          const size = Math.floor(minEdge * 0.7);
+          const size = Math.floor(
+            minEdge * 0.7
+          );
 
           return {
             width: size,
@@ -470,70 +496,150 @@ const startScanner = async () => {
         aspectRatio: 1.333334,
       },
 
+      /*
+        QR SUCCESS
+      */
       async (decodedText) => {
-        if (scanLockedRef.current) return;
+        if (scanLockedRef.current) {
+          return;
+        }
 
+        /*
+          Lock immediately because the camera may
+          detect the same QR multiple times.
+        */
         scanLockedRef.current = true;
 
-        console.log("QR scanned:", decodedText);
+        console.log(
+          "QR CODE DETECTED:",
+          decodedText
+        );
 
-        await stopScanner();
+        try {
+          await stopScanner();
 
-        await verifyQRCode(decodedText);
+          await verifyQRCode(
+            decodedText
+          );
+        } catch (error) {
+          console.error(
+            "QR verification error:",
+            error
+          );
+        }
       },
 
-      () => {
-        // This callback fires continuously while no QR is detected.
-        // Do not show an error here.
-      }
+      /*
+        QR SCAN FAILURE
+
+        This callback runs continuously while the
+        camera is open and no QR is detected.
+
+        Do NOT show an error here.
+      */
+      () => {}
     );
   } catch (err) {
-    console.error("CAMERA START ERROR:", err);
+    console.error(
+      "CAMERA START ERROR:",
+      err
+    );
+
+    /*
+      Clean scanner
+    */
+    try {
+      if (scannerRef.current) {
+        if (
+          scannerRef.current.isScanning
+        ) {
+          await scannerRef.current.stop();
+        }
+
+        scannerRef.current.clear();
+
+        scannerRef.current = null;
+      }
+    } catch (cleanupError) {
+      console.warn(
+        "Scanner cleanup error:",
+        cleanupError
+      );
+    }
 
     setScanning(false);
 
     scanLockedRef.current = false;
 
-    if (scannerRef.current) {
-      try {
-        if (scannerRef.current.isScanning) {
-          await scannerRef.current.stop();
-        }
-
-        scannerRef.current.clear();
-      } catch (clearError) {
-        console.warn("Scanner cleanup error:", clearError);
-      }
-
-      scannerRef.current = null;
-    }
-
+    /*
+      Friendly error message
+    */
     let message =
-      "Unable to open the camera. Please check your camera permissions.";
+      "Unable to open the camera.";
 
+    const errorName =
+      err?.name || "";
+
+    const errorMessage =
+      String(
+        err?.message || err || ""
+      );
+
+    /*
+      Permission denied / dismissed
+    */
     if (
-      err?.name === "NotAllowedError" ||
-      err?.name === "PermissionDeniedError"
+      errorName === "NotAllowedError" ||
+      errorName ===
+        "PermissionDeniedError" ||
+      errorMessage
+        .toLowerCase()
+        .includes("permission")
     ) {
       message =
-        "Camera permission was denied. Allow camera access for Karibu Event in your browser settings and try again.";
-    } else if (
-      err?.name === "NotFoundError" ||
-      err?.name === "DevicesNotFoundError"
+        "Camera permission was denied or dismissed. Allow camera access for Karibu Event in your browser and try again.";
+    }
+
+    /*
+      Camera missing
+    */
+    else if (
+      errorName === "NotFoundError" ||
+      errorName ===
+        "DevicesNotFoundError"
     ) {
       message =
         "No camera was found on this device.";
-    } else if (
-      err?.name === "NotReadableError" ||
-      err?.name === "TrackStartError"
+    }
+
+    /*
+      Camera busy
+    */
+    else if (
+      errorName === "NotReadableError" ||
+      errorName ===
+        "TrackStartError"
     ) {
       message =
-        "Your camera is currently being used by another application. Close other apps using the camera and try again.";
-    } else if (err?.name === "OverconstrainedError") {
+        "The camera is being used by another application. Close other apps using the camera and try again.";
+    }
+
+    /*
+      Unsupported camera constraint
+    */
+    else if (
+      errorName ===
+        "OverconstrainedError"
+    ) {
       message =
-        "The requested camera is not available. Try another camera.";
-    } else if (err?.message) {
-      message = err.message;
+        "The requested camera is not available on this device.";
+    }
+
+    /*
+      Other error
+    */
+    else if (errorMessage) {
+      message = errorMessage;
     }
 
     Swal.fire({
@@ -545,28 +651,52 @@ const startScanner = async () => {
   }
 };
 
+
+/* =========================================================
+   STOP SCANNER
+========================================================= */
+
 const stopScanner = async () => {
-  try {
-    const scanner = scannerRef.current;
+  const scanner =
+    scannerRef.current;
 
-    if (scanner) {
-      if (scanner.isScanning) {
-        await scanner.stop();
-      }
-
-      scanner.clear();
-
-      scannerRef.current = null;
-    }
-  } catch (err) {
-    console.warn("Scanner stop warning:", err);
-
-    scannerRef.current = null;
+  if (!scanner) {
+    setScanning(false);
+    scanLockedRef.current = false;
+    return;
   }
 
-  scanLockedRef.current = false;
+  try {
+    /*
+      Stop camera stream
+    */
+    if (scanner.isScanning) {
+      await scanner.stop();
+    }
+  } catch (err) {
+    console.warn(
+      "Scanner stop warning:",
+      err
+    );
+  }
+
+  try {
+    /*
+      Clear scanner UI
+    */
+    scanner.clear();
+  } catch (err) {
+    console.warn(
+      "Scanner clear warning:",
+      err
+    );
+  }
+
+  scannerRef.current = null;
 
   setScanning(false);
+
+  scanLockedRef.current = false;
 };
 
   /* =========================================================
